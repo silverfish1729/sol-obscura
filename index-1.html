@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sol Obscura — Ask</title>
+<meta name="theme-color" content="#0B0D14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Sol%20Obscura%20Ask%22%2C%22short_name%22%3A%22Sol%20Obscura%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230B0D14%22%2C%22theme_color%22%3A%22%230B0D14%22%7D">
+<style>
+:root{--void:#0B0D14;--shadow:#141826;--edge:#232838;--bone:#EDE8DF;
+  --ash:#8C8B84;--dim:#5A5C6B;--ember:#E4622A;--corona:#8FB4D4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--void);color:var(--bone);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:16px;line-height:1.55;padding:0 0 4rem}
+.wrap{max-width:40rem;margin:0 auto;padding:0 1.15rem}
+h1{font-family:ui-serif,Georgia,serif;font-weight:400;font-size:1.6rem;
+  letter-spacing:-.01em;margin:2.2rem 0 .25rem}
+h1 em{font-style:italic;color:var(--ember)}
+.tag{font-family:ui-monospace,Menlo,monospace;font-size:.62rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:0 0 1.4rem}
+#q{width:100%;padding:.95rem 1rem;border-radius:2px;background:var(--shadow);
+  border:1px solid var(--edge);color:var(--bone);font-size:1.05rem;font-family:inherit}
+#q:focus{outline:2px solid var(--ember);outline-offset:1px;border-color:transparent}
+#q::placeholder{color:var(--dim)}
+.hint{font-size:.78rem;color:var(--dim);margin:.55rem 0 0}
+.hint b{color:var(--ash);font-weight:400}
+#out{margin-top:1.8rem}
+.block{margin-bottom:2rem}
+.qh{font-family:ui-serif,Georgia,serif;font-size:1.18rem;line-height:1.3;
+  margin:0 0 .9rem;padding-bottom:.5rem;border-bottom:1px solid var(--edge)}
+.from{margin:0 0 1.1rem}
+.from:last-child{margin-bottom:0}
+.lbl{font-family:ui-monospace,Menlo,monospace;font-size:.58rem;letter-spacing:.18em;
+  text-transform:uppercase;display:inline-block;padding:.2rem .42rem;
+  border:1px solid;border-radius:2px;margin-bottom:.5rem}
+.l-guide{color:var(--bone);border-color:#3A3F52}
+.l-chat{color:var(--corona);border-color:#2C4257}
+.l-none{color:var(--ember);border-color:#4A2B1A}
+.from p{margin:0 0 .55rem;color:#D8D4CA}
+.from p:last-of-type{margin-bottom:0}
+.from ul{margin:.15rem 0 .55rem;padding-left:1.1rem;color:#D8D4CA}
+.from li{margin:.16rem 0}
+.flag{border-left:2px solid var(--ember);padding:.5rem .7rem;margin:0 0 .95rem;
+  background:#1F1519;font-size:.86rem;color:#D8D4CA}
+.flag b{color:var(--ember);font-family:ui-monospace,Menlo,monospace;font-size:.57rem;
+  letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:.25rem;font-weight:500}
+.note{border-left:2px solid #4A4E5E;padding:.45rem .7rem;margin:.6rem 0 0;
+  background:#171B27;font-size:.83rem;color:var(--ash)}
+.note b{color:var(--ash);font-family:ui-monospace,Menlo,monospace;font-size:.55rem;
+  letter-spacing:.13em;text-transform:uppercase;display:block;margin-bottom:.18rem;font-weight:500}
+.srcs{margin:.7rem 0 0;padding:0;list-style:none}
+.srcs li{font-size:.76rem;color:var(--ash);padding:.35rem 0 .35rem .7rem;
+  border-left:1px solid var(--edge);margin-bottom:.25rem}
+.ref{font-family:ui-monospace,Menlo,monospace;font-size:.58rem;letter-spacing:.08em;
+  color:var(--dim);display:block;margin-bottom:.12rem}
+.silent{font-size:.85rem;color:var(--dim);font-style:italic}
+.empty{padding:1.5rem 0;color:var(--ash)}
+.empty b{display:block;color:var(--bone);font-family:ui-serif,Georgia,serif;
+  font-size:1.1rem;font-style:normal;margin-bottom:.4rem}
+.more{margin-top:1.6rem;padding-top:1rem;border-top:1px solid var(--edge)}
+.more p{font-family:ui-monospace,Menlo,monospace;font-size:.58rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);margin:0 0 .5rem}
+.more button{display:block;width:100%;text-align:left;background:none;border:none;
+  color:var(--ash);font:inherit;font-size:.92rem;padding:.4rem 0;cursor:pointer;
+  border-bottom:1px solid #1B1F2C}
+.more button:hover,.more button:focus-visible{color:var(--bone);outline:none}
+footer{margin-top:3rem;padding-top:1.1rem;border-top:1px solid var(--edge);
+  font-size:.76rem;color:var(--dim)}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>Sol <em>Obscura</em></h1>
+<p class="tag">Ask a question</p>
+
+<input id="q" type="search" placeholder="Is there drinking water?" autocomplete="off" aria-label="Ask a question">
+<p class="hint">Answers come from the <b>Festival Handbook</b> and the <b>participants chat</b>. Where the two disagree, it says which is current.</p>
+
+<div id="out"></div>
+
+<footer>
+  <p>Updated 8 Aug 2026 · Festival Guide v6 + chat to 8 Aug. Works with no signal — open it once on wifi and it keeps working.</p>
+</footer>
+
+</div>
+<script>
+const DB=[
+
+{q:"Is there drinking water on site?",
+ k:"water potable drink drinking tap bottle thirsty hydration well filter purification tablets refill fountain",
+ guide:{t:"<p><strong>Yes. Section 4 states plainly that tap water is potable.</strong></p><p>Section 9 adds that water is available on site, that it's still convenient to keep drinking water at your campsite, and that you can ask at the bar for tap water.</p>",
+   c:[{r:"GUIDE v6 · §4 Venue Rules",t:"Tap water is potable."},
+      {r:"GUIDE v6 · §9 Food & Drink",t:"Water is available onsite; still advisable to keep drinking water at the campsite; ask at the bar for tap water if desired."}]},
+ chat:{t:"<p>Same answer, with the detail of where: every sink in the festival area carries potable city water, any bar will refill your bottle, and in the campground both the washing-up station outside the toilets and the sinks inside the bathrooms are drinkable.</p><p>Worth knowing this reversed. Until 3 August the guide said the taps were untreated well water and would make you sick — people bought purification tablets and arranged bottle runs. That's now resolved in both sources.</p>",
+   c:[{r:"GROUP · 3 Aug · organiser side",t:"After pressing the venue owner, all sinks in the festival area carry potable city water; bars will refill bottles; the campground washing-up station and bathroom sinks are drinkable."},
+      {r:"GUIDE v4 · superseded",t:"Earlier handbook stated tap water came from an untreated well and would make you sick."}]}},
+
+{q:"Do I need eclipse glasses?",
+ k:"glasses eye eyes safety safe protection iso 12312 blind damage look sun filter sunglasses camera telescope binoculars kids",
+ guide:{t:"<p><strong>Every participant receives one pair of ISO-certified eclipse glasses.</strong> You don't need to buy your own.</p><ul><li>Only use ISO-certified glasses — never look at the sun unprotected</li><li>Cameras, telescopes and binoculars need certified solar filters fitted</li></ul><p>The 19:00 safety talk on eclipse day covers how to view safely and how to use the telescope and binoculars.</p>",
+   c:[{r:"GUIDE v6 · §3 Packing — Eclipse Essentials",t:"Every participant will receive one pair of ISO-certified eclipse glasses; optional extras include a telescope, binoculars or camera fitted with a certified solar filter."},
+      {r:"GUIDE v6 · §10 Eclipse Day",t:"Use only ISO-certified glasses, never look directly at the sun without protection, and buy certified filters for optical equipment."}]},
+ chat:{t:"<p>Nobody has raised eye protection in the chat. The organiser has a solar telescope and binoculars to share.</p><p>The handbook still doesn't say where or when glasses are handed out — ask at the gate if you don't receive a pair.</p>",
+   c:[{r:"GROUP · 3 Aug · organiser",t:"A solar telescope and binoculars will be shared for the eclipse."},
+      {r:"CORPUS · absent",t:"No message in the export mentions eclipse glasses or eye safety."}]}},
+
+{q:"What time is the eclipse?",
+ k:"eclipse time totality when start begin partial maximum how long duration timing schedule dark ritual ceremony",
+ conflict:"Two sets of figures are circulating, about two minutes apart.",
+ guide:{t:"<p>Section 10 gives the eclipse-day timeline:</p><ul><li><strong>18:30</strong> — all music on site stops</li><li><strong>19:00</strong> — safety talk at the Celestial Stage. Bring something to sit on, water and snacks; plan for 2.5 hours</li><li><strong>19:15</strong> — Eclipse Ritual begins, meditation and offering</li><li><strong>19:30–20:30</strong> — Orlando Whales performs, interwoven with observation</li><li><strong>19:36</strong> — partial eclipse begins</li><li><strong>20:29</strong> — totality, 1 min 32 sec, sun 4° above the horizon</li><li><strong>20:31</strong> — sun crowns the 2.7° mountain peak</li><li><strong>20:35–20:45</strong> — final act, dissolving into ecstatic dance</li><li><strong>20:56</strong> — sun nears the horizon</li></ul>",
+   c:[{r:"GUIDE v6 · §10 Eclipse Day",t:"Full timeline from music stopping at 18:30 through totality at 20:29 to dusk at 20:56."}]},
+ chat:{t:"<p>The figures posted in the group differ slightly: totality at <strong>20:31</strong>, lasting 1 min 33 sec, sun at 5° falling to 4.7°, ridge at 3°.</p><p>Nothing that matters changes — totality clears the ridge either way — but if you're setting an alarm, be at the stage well before 20:29.</p>",
+   c:[{r:"GROUP · 16 Jul · participant",t:"Site timings posted: partial start 19:36 at 15 degrees, totality 20:31 for 1m33s, partiality ending 20:55."},
+      {r:"GROUP · 2 Aug · organiser side",t:"Sun at 5 to 4.7 degrees during totality against a mountain peak at 3 degrees."}]}},
+
+{q:"Will the mountain block the eclipse?",
+ k:"mountain ridge block horizon view sightline totality visible altitude degrees sunset behind hill see clouds",
+ guide:{t:"<p>Section 10 has the sun crowning the 2.7° mountain peak at 20:31 — so totality at 20:29 happens above the ridge.</p>",
+   c:[{r:"GUIDE v6 · §10 Eclipse Day",t:"Timeline entry for 20:31 describing the sun crowning the 2.7 degree mountain peak, following totality at 20:29 with the sun 4 degrees above the horizon."}]},
+ chat:{t:"<p><strong>No. Totality clears the ridge.</strong> The sun holds 5° falling to 4.7° through totality; the ridge peaks at about 3°.</p><p>What you lose is the second half of the partial phase. Production checked the sun's position in April, at the same declination as mid-August, before booking the venue.</p>",
+   c:[{r:"GROUP · 16 Jul · organiser",t:"Totality finishes and then the sun goes behind the mountain; position checked in April at the same solar position as mid-August, before booking the venue."}]}},
+
+{q:"Is there a shuttle from the station?",
+ k:"shuttle bus train station pickup transfer production monday tuesday thursday arrival lift transport",
+ guide:{t:"<p><strong>Yes — this is new in the latest handbook.</strong> Shuttles run regularly for every train and bus arrival on <strong>Monday and Tuesday</strong>, and again on <strong>Thursday</strong> for runs back to the stations.</p><p><strong>Wednesday is not promised</strong> — traffic that day is unpredictable.</p><p>Check in at Production.</p>",
+   c:[{r:"GUIDE v6 · §5 Getting Here — Shuttle Service",t:"Shuttles will run regularly for every train and bus arrival Monday and Tuesday; Wednesday traffic is unpredictable and nothing can be promised; Thursday runs to the stations will also be available; check in at Production."}]},
+ chat:{t:"<p>Someone checked on 6 August and couldn't find shuttles in the guide — they were reading an older version. The shuttle section is in v6.</p><p>If you'd rather not rely on it: the Hife bus stops in front of the venue, the Ride Share group has a spreadsheet, and there's a local taxi service on +34 618 17 23 43.</p>",
+   c:[{r:"GROUP · 6 Aug · participant",t:"Asked whether shuttles had been dropped, having not found them in the guide version they held."},
+      {r:"GROUP · 5 Aug · organiser",t:"Local taxi service contact shared for the area."}]}},
+
+{q:"Does my ticket need to be in my name?",
+ k:"ticket name resale transfer change deadline sunday 11pm id check in security entry buyer seller",
+ guide:{t:"<p><strong>Yes, and there's a deadline.</strong> The ticket must be in your name to enter. If you bought a resale ticket it must be renamed to you, not left in the original holder's name.</p><p><strong>All ticket changes must be completed by 23:00 on Sunday 9 August.</strong></p><p>Have your ID and ticket ready for security at the gate.</p>",
+   c:[{r:"GUIDE v6 · §6 Arrival & Check-in",t:"The ticket must be in your name to enter; resale tickets must be in the buyer's name not the original holder's; ticket changes have to be completed by 11pm on Sunday the 9th."}]},
+ chat:{t:"<p>The mechanism: the platform has no name-change function, so the seller sends the organiser the buyer's name and email and it's changed manually.</p><p>Given the Sunday 23:00 cut-off, anyone still buying a resale ticket needs to get that done now — a manual change takes someone actually doing it.</p>",
+   c:[{r:"GROUP · 31 Jul · organiser",t:"No easy way to change names on the platform; the seller must supply the buyer's name and email for a manual change."}]}},
+
+{q:"What if I arrive after dark?",
+ k:"dark night arrive late driving park camping spot 8am general parking headlights",
+ guide:{t:"<p><strong>No driving on site in the dark.</strong> If you arrive after dark you'll park in general parking and wait until 08:00 to be given your camping spot.</p><p>Arrive before dark if you possibly can — otherwise you're sleeping in the car park.</p>",
+   c:[{r:"GUIDE v6 · §6 Arrival & Check-in",t:"No driving onsite in the dark; those arriving after dark must park in general parking and wait until 8am to be given a camping spot, so arriving earlier is advisable."}]},
+ chat:{t:"<p>Consistent with the standing rule that vehicles don't move on site at night.</p>",
+   c:[{r:"GROUP · 30 Jul · organiser",t:"Vehicles can move in and out as often as wanted during the day, but not at night."}]}},
+
+{q:"Toilets, showers and first aid?",
+ k:"toilet toilets shower showers wash bathroom sanitation first aid medical doctor emergency 112 hot water clean",
+ guide:{t:"<p><strong>Campsite:</strong> real showers, toilets and a dishwashing area, plus a shaded picnic area.</p><p><strong>Festival grounds:</strong> toilets next to the Pool Stage, in the circus tent, and inside the workshop space. Outdoor showers next to the pool. Showers are hot.</p><p><strong>First aid:</strong> a kit is in Production, next to the campground. Bring your own supplies for what you or your family might need.</p><p>Emergency number in Spain is <strong>112</strong>.</p>",
+   c:[{r:"GUIDE v6 · §7 Your Campsite",t:"Real showers, toilets and a dishwashing area plus a shaded picnic area."},
+      {r:"GUIDE v6 · §8 Around the Festival",t:"Toilet and shower locations listed, with the first aid kit in Production and advice to bring your own supplies."},
+      {r:"GUIDE v6 · §13 Health & Safety",t:"Emergency number in Spain given as 112, alongside heat exhaustion and heat stroke guidance."}]},
+ chat:null},
+
+{q:"Is there phone signal or wifi? Can I charge my phone?",
+ k:"signal phone reception wifi internet charge charging plug outlet work coworking laptop remote connectivity extension",
+ guide:{t:"<p><strong>Yes to both</strong>, with caveats. It's countryside, so calls can be spotty in the campground. All buildings on site have wifi.</p><p>Charging points are inside the workshop space and the indoor area. <strong>Bring an extension cord and label your chargers and phone with your name.</strong></p><p>The indoor dining room has tables, AC and good wifi for coworking. Bring headphones and keep the volume down.</p>",
+   c:[{r:"GUIDE v6 · §8 Around the Festival",t:"Charging points inside the workshop space, with advice to bring extension cords and label items; indoor dining room has tables in the AC and good wifi for coworking."},
+      {r:"GUIDE v6 · §15 FAQ",t:"Phone reception exists but can be spotty in the campground; all buildings have wifi; outlets for charging are in the indoor space and items should be labelled."}]},
+ chat:{t:"<p>The coworking area was confirmed in the group as the indoor dining room with AC.</p>",
+   c:[{r:"GROUP · 30 Jul · organiser",t:"Indoor dining room has tables and will be the coworking area, with air conditioning."}]}},
+
+{q:"Can I bring my dog?",
+ k:"dog dogs pet pets animal cat assistance service sitter kennel feed farm",
+ guide:{t:"<p><strong>No. Pets are not permitted anywhere on site, including the campsite.</strong></p><p>The venue is home to dogs, cats, horses, a pony, chickens, guinea pigs, swans and ducks — unfamiliar animals cause stress for the residents and other guests.</p><p>If you rely on a certified assistance dog, contact the production team before arriving.</p><p>Don't feed the resident animals.</p>",
+   c:[{r:"GUIDE v6 · §3 Packing — Pets",t:"Pets are NOT permitted anywhere on site including the campsite, because the venue houses many resident animals; certified assistance dogs require contacting production in advance."},
+      {r:"GUIDE v6 · §12 Leave No Trace",t:"Respect the farm animals on site and local wildlife, and do not feed them."}]},
+ chat:{t:"<p>Someone asked on 13 June for dog sitters or hostels near the venue and got no reply.</p>",
+   c:[{r:"GROUP · 13 Jun · participant — unanswered",t:"Request for dog sitter or hostel recommendations near the venue received no reply."}]}},
+
+{q:"Can I cook at my camp?",
+ k:"cook cooking stove gas electric camping kitchen kettle hot plate bbq barbecue noodles wildfire fire extinguisher",
+ conflict:"The handbook recommends a device most people have nowhere to plug in.",
+ guide:{t:"<p>Outside food is welcome in the campground. Bring your own stove, cookware, utensils, plates and cups.</p><p><strong>The communal BBQ is cancelled</strong> because of regional fire Red Alerts. A gas cooker requires you to bring a fire extinguisher. <strong>An electric hot plate is recommended instead.</strong></p><p>Open-fire BBQs and charcoal grills are on the do-not-bring list.</p>",
+   c:[{r:"GUIDE v6 · §7 Your Campsite — Cooking",t:"Communal BBQ unavailable due to regional fire Red Alerts; gas cookers require a fire extinguisher; an electric hot plate is recommended instead; outside food welcome with your own equipment."},
+      {r:"GUIDE v6 · §14 Fire Safety",t:"Anyone using an open-flame gas stove must bring a fire extinguisher."}]},
+ chat:{t:"<p><strong>Where to plug that hot plate in is still unresolved.</strong> Power only exists on glamping and electricity plots, and those sold out.</p><p>Asked three times. On 5 August the organiser called it a question going on the list of problems to solve, guessing at cables run to the camping picnic area.</p><p>Don't buy a hot plate on the strength of Section 7 without checking.</p>",
+   c:[{r:"GROUP · 5 Aug · organiser — unresolved",t:"Access to plugs for electric stoves in general camping acknowledged as an open problem, with a guess about cables in the camping picnic area."},
+      {r:"GROUP · 5 Aug · organiser",t:"Electricity camping is now full and the generator will not allow for more users."}]}},
+
+{q:"Is there electricity?",
+ k:"electricity power socket plug hookup cable adapter cee schuko generator glamping van extension",
+ conflict:"The handbook still prices a pass that sold out.",
+ guide:{t:"<p>Section 7 lists a <strong>Vehicle Parking with Electricity Pass at €60</strong> — a 30m² plot with standard two-prong European power points. Glamping also has an electricity connection; bring a long extension cord to reach your tent.</p><p>Generators require advance notice to production for placement, and a fire extinguisher.</p>",
+   stale:"Electricity plots sold out on 5 August.",
+   c:[{r:"GUIDE v6 · §7 Your Campsite — Pitches & Pricing",t:"Vehicle Parking with Electricity Pass at 60 euro for a 30m2 plot with standard two-prong European power points; glamping has electricity with a long extension cord advised."}]},
+ chat:{t:"<p><strong>Electricity plots are sold out</strong> — the generator won't carry more users.</p><p><strong>But general campers do have charging.</strong> Asked directly on 6 August: there are charging points in the buildings and workshop spaces. Because of numbers, bring a power bank and a multi-port plug, and an EU splitter. Label everything you leave charging — phone, power bank, charger, even cables.</p><p>Production said on 7 August they're working on a further option.</p><p>One practical note: outdoor sockets are CEE single-phase, not the Schuko you have at home, so bring an adapter and an outdoor-rated cable.</p>",
+   c:[{r:"GROUP · 6 Aug · organiser side",t:"Charging points available in the buildings and workshop spaces, with advice to bring power banks and plugs with multiple charging ports given the numbers attending."},
+      {r:"GROUP · 6 Aug · organiser side",t:"Request to label everything left at a charging point with your name, including phones, power banks, chargers and cables."},
+      {r:"GROUP · 7 Aug · organiser",t:"Confirmation that an option is being worked on."},
+      {r:"GROUP · 5 Aug · organiser",t:"Electricity camping is now full and the generator will not allow for more users."}]}},
+
+{q:"Are camping spots assigned? How big?",
+ k:"camping spot assigned reserve plot pitch tent friends together placement allocation first come serve size 30m2 price map layout",
+ guide:{t:"<p>Section 7 prices a <strong>Vehicle Parking Pass at €40</strong> — a 30m² plot suitable for two vehicles, or one vehicle plus several tents. With electricity it's €60.</p><p>Glamping is a five-night stay for groups of 2–6, or a bed in a six-person dorm tent, furnished with rugs, solar lights and beds with sheets and pillows.</p><p><strong>A campground map is available on site</strong> — that's new in the latest handbook. The campground needs a camping bracelet to enter.</p>",
+   c:[{r:"GUIDE v6 · §7 Your Campsite",t:"Pitch pricing at 40 euro for a 30m2 vehicle plot or 60 with electricity; glamping as a five-night stay for groups of 2-6 or a dorm bed; campground map available onsite."}]},
+ chat:{t:"<p><strong>First come, first served — placement is not assigned.</strong> There are more than enough spots.</p><p>Free camping is an open area for tents: park in the car area, carry your gear over, pitch where you like. To camp with friends, ask them to hold space until you arrive.</p>",
+   c:[{r:"GROUP · 5 Aug · organiser",t:"Placement is not assigned as there are more than enough spots; camp with friends by asking them to save space."},
+      {r:"GROUP · 30 Jul · organiser",t:"Individual reservations dropped because numbers grew too large."}]}},
+
+{q:"Is there shade? Can I hang a hammock?",
+ k:"shade shadow sun hot tarp hammock trees gazebo canopy heat protection sleep sunburn",
+ guide:{t:"<p><strong>Natural shade at the campsite is limited.</strong> The packing list asks you to bring a shade structure or tarp, and suggests a shared one if you're camping with friends.</p><p><strong>Hammocks are not allowed</strong> and will be taken down anywhere in the festival grounds and campsite.</p>",
+   c:[{r:"GUIDE v6 · §3 Packing — Camping",t:"Shade structure or tarp listed, with a note that natural shade at the campsite is limited."},
+      {r:"GUIDE v6 · §4 Venue Rules",t:"Hammocks are not allowed and will be taken down anywhere in the festival grounds and campsite."}]},
+ chat:{t:"<p>The group confirms the campground is essentially open ground — what trees exist are young and sparse.</p><p>A freestanding hammock stand was said to be acceptable, though the handbook states the rule without that exception.</p><p>Suggestion from the group: bring textile and rope and build communal shade between tents and vans.</p>",
+   c:[{r:"GROUP · 29 Jul · organiser",t:"The venue owner is strict about hammocks, though a freestanding stand is acceptable and he will only remove them from his trees."},
+      {r:"GROUP · 3 Aug · participants",t:"Campground photos show little mature tree cover."}]}},
+
+{q:"How do I get there?",
+ k:"address gate location coordinates gps maps aldea entrance where venue barcelona bus hife train travel transport airport rideshare drive",
+ guide:{t:"<p><strong>Masia Pla dels Catalans, Carr. Tortosa, Km 11, L'Aldea, Tarragona.</strong> Gate GPS: 40.754920, 0.596966.</p><p><strong>Driving:</strong> about 2 hours from Barcelona via the AP-7, right at the L'Aldea exit roundabout. Free parking on site.</p><p><strong>Bus:</strong> Hife from Numancia 149–165–167 in Barcelona, next to L'Illa Diagonal, to Aldea Intercambiador — a 5-minute walk. From the airport, T1 Level 0 Platforms 7–12, follow \"Intercity Buses\", change at Gavà Mar. Search stops for \"Tortosa\", not \"L'Aldea\".</p><p><strong>Train:</strong> Renfe to L'Aldea-Amposta-Tortosa. <em>It is not possible to walk from the train station.</em></p><p>Shuttles now run for train and bus arrivals Monday and Tuesday, and Thursday back to the stations.</p>",
+   c:[{r:"GUIDE v6 · §5 Getting Here",t:"Full address, gate GPS coordinates, driving route via the AP-7, detailed Hife bus directions including the airport connection, a warning that walking from the train station is not possible, and a shuttle service for Monday, Tuesday and Thursday."}]},
+ chat:{t:"<p>Walking in from the bus stop, per the organiser: cross to the centre of the roundabout, cross again at Via Servei, follow the quiet road, take the first right, and continue round to the gate. About the length of a walk to a metro station.</p><p>There's a separate Ride Share group with a spreadsheet in its description.</p><p><strong>A local taxi service was shared on 5 August: Tdetaxi, +34 618 17 23 43.</strong> Worth saving before you travel — the handbook warns taxis aren't abundant at the station.</p>",
+   c:[{r:"GROUP · 5 Aug · organiser",t:"Local taxi service contact shared, to be added to a future version of the guide and the website."},
+      {r:"GROUP · 5 Aug · organiser",t:"Step-by-step walking directions from the bus stop through the roundabout and Via Servei crossing to the gate."},
+      {r:"GROUP · 2 Aug · participant",t:"Photo of the correct Hife stop, noting three Barcelona stops plus airport and advising advance purchase."}]}},
+
+{q:"When does the gate open? Can I arrive early?",
+ k:"gate open arrive early monday sunday 9th 10th build check in first day when opening hours late eclipse day traffic closed",
+ guide:{t:"<p><strong>The event opens at 08:00 on Monday 10 August</strong> and stays open throughout.</p><p><strong>Exception: the gate is closed 19:00–21:00 on Wednesday 12 August, during the eclipse.</strong> No one is allowed in during that window — note this is a longer closure than earlier versions of the handbook stated.</p><p>Wednesday is expected to be one of the busiest traffic days in the region — the AP-7 and N-340 will be congested from early. Leave as early as you can.</p>",
+   c:[{r:"GUIDE v6 · §5 Getting Here",t:"Event opens at 08:00 on Monday 10 August and remains open throughout, with the gate closed from 19:00 to 21:00 on Wednesday 12 August during the eclipse."},
+      {r:"GUIDE v6 · §2 Before You Travel",t:"Wednesday 12 August expected to be one of the busiest traffic days in the region with severe congestion on the AP-7 and N-340."}]},
+ chat:{t:"<p>Arriving Sunday the 9th is possible if the organisers know in advance — but there's no security, catering or bar that night, so come fully self-sufficient.</p><p>The grounds open at 16:00 Monday. Before that the Nido, pool and air-conditioned restaurant side are open, with arts and crafts from 12:00.</p>",
+   c:[{r:"GROUP · 29 Jul · organiser",t:"Arriving the night before is fine if they know, but security, catering and the bar do not start until Monday."},
+      {r:"GROUP · 5 Aug · organiser",t:"Nido, pool and air-conditioned restaurant side open before the grounds open at 16h."}]}},
+
+{q:"Can I drive in and out during the festival?",
+ k:"drive in out car van camper vehicle move leave site supermarket errands parking gate off site re-enter",
+ guide:{t:"<p><strong>Yes — no restrictions on movement of people or vehicles.</strong> Please don't drive at night, for others' safety.</p><p>You can also move between the festival grounds and campground as often as you like.</p><p>Vehicles without a permit must park in the general parking area, and there's no driving on site after dark.</p>",
+   c:[{r:"GUIDE v6 · §15 FAQ",t:"No restrictions on movement of people or vehicles, with a request not to drive at night, and free movement between festival grounds and campground."},
+      {r:"GUIDE v6 · §6 Arrival & Check-in",t:"No driving onsite in the dark."}]},
+ chat:{t:"<p>Same answer, with one clarification: cars aren't allowed in the free camping area at all. If you want your vehicle beside you, that's the vehicle camping ticket.</p>",
+   c:[{r:"GROUP · 30 Jul · organiser",t:"Any car, van or motorbike can move in and out as often as wanted except at night; cars are not allowed in free camping."}]}},
+
+{q:"What food is available?",
+ k:"food eat catering meal plan breakfast lunch dinner bar drinks alcohol grocery shop supermarket vegetarian vegan gluten celiac allergy",
+ guide:{t:"<p>Catering runs throughout — breakfast, lunch, dinner, ice cream and snacks, with options for vegetarians, vegans and coeliacs. For other allergies, tell the catering team.</p><p>Bars are open all day with alcoholic and non-alcoholic drinks at reasonable prices.</p><p><strong>Outside food and drink is not permitted inside the festival grounds</strong> — only water. It is welcome in the campground.</p><p>Grocery stores are a 10–20 minute drive away, not walkable.</p>",
+   c:[{r:"GUIDE v6 · §9 Food & Drink",t:"Catering throughout with vegetarian, vegan and coeliac options; bars open all day; outside food and drink not permitted in the festival grounds but welcome in the campground; grocery stores a 10-20 minute drive away."}]},
+ chat:{t:"<p>A €100 full-board meal plan was offered through the ticketing platform with an access code, capped at 80 purchases — likely gone.</p><p>If you didn't buy it, the catering team sells the same food individually. Gluten-free is available across everything except the pizza; the organiser is coeliac. All meals are made vegetarian with tofu or heura options.</p><p><strong>Cards are accepted for food and drinks</strong> — confirmed 6 August. Still worth carrying some cash.</p><p>A request to confirm vegan <em>and</em> gluten-free at <em>every</em> meal was never answered specifically. If it's medical, check.</p>",
+   c:[{r:"GROUP · 28 Jul · organiser",t:"Full board at 100e; gluten free available for everything except pizza; all meals made veggie with tofu or heura options."},
+      {r:"GROUP · 29 Jul · organiser",t:"Catering team will offer the same food for sale individually."},
+      {r:"GROUP · 6 Aug · organiser side",t:"Confirmation that cards will be accepted for food and drinks."},
+      {r:"GROUP · 28 Jul · participant — unanswered",t:"Request to confirm vegan and gluten free at every meal received no specific reply."}]}},
+
+{q:"Is ice sold on site?",
+ k:"ice cooler cold fridge freezer chill drinks beer",
+ guide:{t:"<p><strong>No. Ice is not for sale.</strong> Supermarkets in L'Aldea have it — factor in the traffic on 12 August and get supplies early.</p>",
+   c:[{r:"GUIDE v6 · §4 Venue Rules",t:"Ice is not for sale."},
+      {r:"GUIDE v6 · §9 Food & Drink",t:"The festival does not sell ice; supermarkets in L'Aldea will have it, with advice to get supplies early given the traffic on 12 August."}]},
+ chat:{t:"<p>Confirmed — it's the venue's rule, not the festival's. Organisers won't stop people self-organising a run into town.</p><p>A follow-up on 4 August asking whether the bar has an ice machine went unanswered.</p>",
+   c:[{r:"GROUP · 29 Jul · organiser",t:"The venue does not allow ice sales, being a private space with its own rules, though participants may self-organise."},
+      {r:"GROUP · 4 Aug · participant — unanswered",t:"Question about an ice machine at the bar received no reply."}]}},
+
+{q:"What should I pack?",
+ k:"pack packing bring list what to bring tent sleeping bag headlamp sunscreen earplugs repellent clothes swimsuit towel yoga mat",
+ guide:{t:"<p>Section 3 has full checklists. The essentials:</p><ul><li><strong>Documents</strong> — ticket, photo ID or passport, vehicle pass, cash and bank card</li><li><strong>Camping</strong> — tent, sleeping bag, mattress, pillow, headlamp, refillable bottle, powdered electrolytes, shade structure</li><li><strong>Clothing</strong> — light clothes for 30–36°C days, warm layers for cool evenings, rain jacket, swimsuit and towel, comfortable shoes</li><li><strong>Protection</strong> — sunscreen, sunglasses, hat, mosquito repellent, earplugs</li><li><strong>Eclipse</strong> — camping chair, blanket, cushion; glasses are provided</li></ul><p><strong>A yoga mat is now listed as required for many workshops</strong> — it moved up from optional in earlier versions.</p><p>Also welcome: instruments, pool inflatables, water toys, slackline, juggling props, costumes, board games, bird guides.</p>",
+   c:[{r:"GUIDE v6 · §3 Packing Checklists",t:"Full checklists covering documents, camping gear, clothing, sun insect and hearing protection, eclipse extras, and optional items with a yoga mat noted as required for many workshops."},
+      {r:"GUIDE v6 · §2 Before You Travel",t:"Typical Mediterranean summer conditions of 30-36C days with cooler evenings and occasional breeze."}]},
+ chat:{t:"<p>For the ceremony specifically, the ceremony letter adds a small symbolic object that means something to you, and a simple acoustic instrument — shaker, maraca, rattle, small drum — for the collective soundscape.</p>",
+   c:[{r:"CEREMONY LETTER",t:"Recommends water, a blanket or folding chair, an optional symbolic object, and simple hand percussion."}]}},
+
+{q:"What can't I bring?",
+ k:"not allowed banned forbidden prohibited pets fireworks weapons drones sound system speaker bbq charcoal hammock",
+ guide:{t:"<p>Leave at home: pets, fireworks or explosives, weapons of any kind, drones, large sound systems (bigger than a JBL Xtreme or equivalent), and open-fire BBQs or charcoal grills.</p><p>Also: no hammocks anywhere, no outside food or drink inside the festival area, and no cooking with open flame without your own extinguisher.</p>",
+   c:[{r:"GUIDE v6 · §3 Packing — What Not to Bring",t:"Pets, fireworks or explosives, weapons, drones, large sound systems above a JBL Xtreme equivalent, and open-fire BBQs or charcoal grills."},
+      {r:"GUIDE v6 · §4 Venue Rules",t:"No hammocks, no outside food and drink in the festival area, and no cooking with open flame without your own extinguisher."}]},
+ chat:null},
+
+{q:"What's on site — pool, stages, workshops?",
+ k:"pool swimming stages jupiter solarvision nebula astral lounge market nido kids workshop amara vortex facilities amenities football map",
+ guide:{t:"<p><strong>Stages</strong> — these were renamed in the latest handbook: <strong>Jupiter</strong> (outdoor, with the fire arena), <strong>SolarVision</strong> (large circus), <strong>Nebula</strong> (by the pool, under a roof, beside the market), <strong>Astral Lounge</strong> (chill-out at night, indoors; workshops during the day).</p><p><strong>Pool — open 08:00 to 23:00.</strong> Locked outside those hours, and entry isn't allowed. <em>No lifeguard.</em> Children under 7 should never be left alone near it. A baby pool is in the Nido.</p><p>Also: indoor dining room with AC and wifi, indoor workshop space, artisan market by the pool, the Nido kids' area, and the Amara Vortex lounge hosting community talks.</p><p>A festival map is available on site.</p>",
+   c:[{r:"GUIDE v6 · §8 Around the Festival",t:"Four stages listed as Jupiter outdoor with fire arena, SolarVision large circus, Nebula by the pool, and Astral Lounge indoors; pool open 8am to 11pm and locked when closed, with no lifeguard and supervision rules for children under 7."},
+      {r:"GUIDE v6 · §16 Festival Map",t:"Festival map available on site."}]},
+ chat:{t:"<p>There's also a football pitch, though installations may go on it, and a go-kart track with cars sized for children.</p>",
+   c:[{r:"GROUP · 3 Aug · organiser",t:"A football pitch exists but will likely have installations placed on it."},
+      {r:"GROUP · 26 Jul · organiser",t:"A go kart track exists with cars only for children small enough to use them."}]}},
+
+{q:"When does the music run? Will I sleep?",
+ k:"music sleep noise night stages lineup earplugs rest quiet hours schedule programme dj bands loud generator",
+ guide:{t:"<p><strong>The campground is always quiet.</strong> A small personal speaker is fine; come to the festival ground to party. Earplugs are on the packing list.</p><p>Generators need advance notice to production for placement, and are discouraged.</p><p>The daily schedule is still marked coming soon in the handbook.</p>",
+   c:[{r:"GUIDE v6 · §7 Your Campsite — Quiet Hours",t:"The campground is always quiet; a small personal speaker is fine but partying belongs on the festival ground; generators require advance notice and are discouraged."},
+      {r:"GUIDE v6 · §17 Daily Schedule",t:"Still marked as coming soon."}]},
+ chat:{t:"<p>The main stages run evening and night; afternoons are chill. It's a burner-style gathering, so something is usually happening.</p><p>Group advice: bring earplugs, sleep when your body says to, and put a tarp over the tent so you can sleep past sunrise. Music ends around 06:30–07:00 Friday morning.</p>",
+   c:[{r:"GROUP · 3 Aug · participants",t:"Two main stages have evening and night music with chill music in the afternoons; repeated advice to bring earplugs."},
+      {r:"GROUP · 3 Aug · organiser side",t:"Programme officially ends around 6:30 to 7am Friday when the music stops and the stages close."},
+      {r:"GROUP · 5 Aug · organiser",t:"Final schedules being worked on and expected very soon."},
+      {r:"GROUP · 6 Aug · organiser side",t:"Asked about the final workshop schedule, the reply was that it would be published very soon."}]}},
+
+{q:"What happens on Friday and when do I leave?",
+ k:"friday leave depart departure end pack strike checkout closing 14th paella cacao last day go home",
+ guide:{t:"<p>Still nothing. Section 17, the daily schedule, remains marked coming soon, and no closing time or departure deadline appears anywhere in the handbook.</p><p>Thursday shuttles to the stations are mentioned, but not Friday ones.</p>",
+   c:[{r:"GUIDE v6 · §17 Daily Schedule",t:"Marked as coming soon, with no departure or site-closing information given elsewhere."},
+      {r:"GUIDE v6 · §5 Getting Here",t:"Shuttle runs to the stations listed for Thursday, with no mention of Friday."}]},
+ chat:{t:"<p>Music ends around 06:30–07:00 Friday morning. Then: a talk on next year's eclipse, a cacao ceremony with ecstatic dance, and a paella lunch to close. Time to finish packing after lunch.</p><p>Official strike — taking down structures — starts around 16:00, and everyone still there is encouraged to help.</p><p><strong>No hard departure time or gate-closing time has been given.</strong> Asked by five people on 3 August. Plan around the 16:00 strike.</p>",
+   c:[{r:"GROUP · 4 Aug · organiser side",t:"Friday includes a talk about next year's eclipse, a cacao ceremony with ecstatic dance, and a paella lunch to close."},
+      {r:"GROUP · 3 Aug · organiser side",t:"Official strike starts around 16:00 Friday with everyone present encouraged to help."},
+      {r:"GROUP · 3 Aug · participants — unresolved",t:"Repeated questions about the final departure deadline and gate closing were not definitively answered."}]}},
+
+{q:"Are tickets still available?",
+ k:"tickets two day 2-day eclipse day sold out buy available gate pay on site day pass resell refund exchange",
+ conflict:"The handbook still describes an upgrade route for a pass that no longer exists.",
+ guide:{t:"<p>Section 2 says that if you want to change a 2-Day-Pass to a full event pass, you can email the organiser. The address printed there is missing its domain ending, so it will bounce as written.</p>",
+   stale:"Two-day passes sold out before 5 August.",
+   c:[{r:"GUIDE v6 · §2 Before You Travel",t:"Offers an email route to change a 2-Day-Pass to a full event pass, at an address given without a domain ending."}]},
+ chat:{t:"<p><strong>Two-day passes are sold out. Full festival tickets only.</strong> You can't turn up on eclipse day and pay at the gate.</p><p>Resale is the remaining route — but remember the handbook's cut-off: <strong>all name changes must be done by 23:00 on Sunday 9 August.</strong></p>",
+   c:[{r:"GROUP · 5 Aug · organiser side",t:"Two-day tickets allowing eclipse-day entry are sold out and paying on site that day is not possible."},
+      {r:"GUIDE v6 · §6 Arrival & Check-in",t:"Ticket changes have to be completed by 11pm on Sunday the 9th."}]}},
+
+{q:"What about the heat?",
+ k:"heat hot temperature sunstroke heatstroke exhaustion dehydration electrolytes sunscreen weather forecast 112 emergency",
+ guide:{t:"<p>Expect 30–36°C days, cooler evenings and early mornings. Section 13 has full heat exhaustion and heat stroke guidance.</p><p><strong>Prevention:</strong> drink before you feel thirsty, add electrolytes through the day, wear light breathable clothing and a hat, take breaks in shade, avoid alcohol and caffeine, use sunscreen.</p><p><strong>Heat stroke — no sweating, confusion, slurred speech, seizures — call 112 immediately.</strong> Heat exhaustion can turn into heat stroke fast. Act early.</p>",
+   c:[{r:"GUIDE v6 · §13 Health & Safety",t:"Full table distinguishing heat exhaustion from heat stroke with signs and actions, prevention advice, and the instruction to call 112 immediately for heat stroke."}]},
+ chat:null},
+
+{q:"Fire props and fire safety?",
+ k:"fire props poi staff spinning juggling arena extinguisher fuel safety wildfire red alert jupiter",
+ guide:{t:"<p><strong>Fire props are welcome</strong> — there's a dedicated fire arena with fire safety on hand, now sited at the outdoor Jupiter stage. Only play in the arena.</p><p>No fire effects that make sparks. Drip excess fuel off; do not spin it off.</p><p>Gas stoves and generators both require you to bring a fire extinguisher.</p>",
+   c:[{r:"GUIDE v6 · §14 Fire Safety",t:"Fire props welcome in a dedicated arena with fire safety on hand, no spark-producing effects, and excess fuel to be dripped off rather than spun off."},
+      {r:"GUIDE v6 · §8 Around the Festival",t:"Jupiter described as the outdoor stage with the fire arena."}]},
+ chat:{t:"<p>Confirmed in the group — fire juggling is contained to a special area with safety measures. Gas stoves are discouraged given the regional wildfire risk.</p>",
+   c:[{r:"GROUP · 29 Jul · participant",t:"Fire juggling will be contained to a special area with safety measures."}]}},
+
+{q:"Nudity, consent and photography?",
+ k:"nudity naked consent photography photos permission community guidelines inclusion behaviour security respect",
+ guide:{t:"<p><strong>Consent:</strong> ask first, respect no, take care of one another. Anyone uncomfortable with another guest's behaviour can speak to Production or Security at any time.</p><p><strong>Nudity is welcome</strong> provided it's respectful of those around you. Carry a towel if sitting on shared furniture, and be mindful that many families and children are attending.</p><p><strong>Photography:</strong> your ticket agreed to event photography for promotional use — speak to Production to opt out. Ask permission before photographing others for personal posts.</p><p><strong>No flags.</strong> The festival director confirmed on 8 August that a no-flag policy had already been announced.</p>",
+   c:[{r:"GUIDE v6 · §12 Community Guidelines",t:"Consent principles, an inclusion statement, nudity welcomed subject to respect and towel use on shared furniture, and photography terms including how to opt out."}]},
+ chat:{t:"<p>There's also a participant-organised adults-only space, not run by production. Open 22:00 to 04:00 on specific nights, sited away from families, with its own WhatsApp group. Consent and child protection are stated as its top priorities; it's not open to voyeurs or single cis men.</p>",
+   c:[{r:"GROUP · 29 Jul · participant organiser",t:"Hours of 22:00 to 4:00 on specific nights in a secure location with a strict set of rules and volunteer helpers."},
+      {r:"GROUP · 28 Jul · organiser",t:"Production cannot organise or manage it; a spot away from families will be found on site."}]}},
+
+{q:"Bringing children?",
+ k:"kids children family nido baby childcare daycare schedule pool supervision workshops pony cabaret olympics aina martin",
+ guide:{t:"<p>Section 11 is much fuller in the latest handbook:</p><ul><li><strong>Family Olympics</strong> — bring water toys, water guns, pool noodles, buckets, balls</li><li><strong>Pony rides</strong> — Tuesday to Friday, 09:00–11:00. Sign up beforehand at the Nido</li><li><strong>Cabaret</strong> — kids or whole families can prepare a short performance; sign up at the Nido</li><li>Activities are split into under-10, 10+, and whole-family. A printed programme will be at the Nido</li></ul><p><strong>It is not a babysitting or childcare service.</strong> All children must be accompanied by a responsible adult at all times. The Kids Area team facilitates but doesn't take responsibility for supervision.</p><p>To help out, speak to <strong>Aina or Martin</strong> at the Nido. Join Kidz-NIDO in the WhatsApp Community to coordinate with other families.</p>",
+   c:[{r:"GUIDE v6 · §11 Families",t:"Family Olympics with water toys, age-banded activities with a printed programme at NIDO, cabaret sign-up, pony rides Tuesday to Friday 9-11h with prior sign-up, and an explicit statement that no babysitting or childcare service is provided."},
+      {r:"GUIDE v6 · §8 Around the Festival",t:"Nido described as a child-focused area with full programming that is not a daycare, with a baby pool."}]},
+ chat:{t:"<p>A facilitator has announced two bilingual medicine music, movement and creative expression workshops — one for kids, one for adults.</p><p>Grandparents are travelling with several families to help.</p>",
+   c:[{r:"GROUP · 14 Jul · participant",t:"A facilitator announced two bilingual music, movement and creative expression workshops, one for kids and one for adults."},
+      {r:"GROUP · 20 May · organiser",t:"Many grandparents coming to help with kids from other families."}]}},
+
+{q:"Are there lockers? Where's lost and found?",
+ k:"lockers storage secure valuables safe theft security wristband lost found production",
+ guide:{t:"<p><strong>No lockers.</strong> Items of security concern can be stored, properly labelled, in the production office — though <strong>Production reserves the right to refuse storing items.</strong> Bringing valuables isn't recommended.</p><p>Lost & Found is at Production.</p><p>The campground needs a camping bracelet to enter, and security circulates.</p>",
+   c:[{r:"GUIDE v6 · §15 FAQ",t:"No lockers, with items of security concern storable and labelled in the production office, a recommendation against bringing valuables, and Production reserving the right to refuse storing items."},
+      {r:"GUIDE v6 · §8 Around the Festival",t:"Lost & Found handled at Production."}]},
+ chat:{t:"<p>Confirmed — lockers are a rented service that wasn't hired. Security restricts the campground to camping wristbands.</p>",
+   c:[{r:"GROUP · 24 Jul · organiser",t:"Lockers are a rented service rather than a venue feature, so there will be none, but security only allows camping wristbands into the campground."}]}},
+
+{q:"Where are the glamping tents?",
+ k:"glamping tent location where dorm bed furnished arrive early booking",
+ guide:{t:"<p>Section 7 covers what glamping includes — a five-night stay, groups of 2–6 or a dorm bed, furnished with rugs, solar lights, beds with sheets and pillows, electricity available with a long extension cord.</p><p>It still doesn't say where the tents are sited or when they open. A campground map is now available on site, which should answer it on arrival.</p>",
+   stale:"The 1 August booking deadline has passed.",
+   c:[{r:"GUIDE v6 · §7 Your Campsite",t:"Glamping described as bookable by 1 August, a five-night stay for groups of 2-6 or a dorm bed, furnished, with electricity available; campground map available onsite."}]},
+ chat:{t:"<p>Asked on 5 August, no reply. Whether glamping guests can arrive the evening of the 9th was asked on 25 July, also unanswered.</p>",
+   c:[{r:"GROUP · 5 Aug · participant — unanswered",t:"Question about the location of the glamping tents received no reply."},
+      {r:"GROUP · 25 Jul · participant — unanswered",t:"Question about arriving the evening of the 9th for glamping received no direct reply."}]}},
+
+{q:"Rubbish and recycling?",
+ k:"rubbish trash waste bin recycling glass plastic paper leave no trace cigarette ashtray",
+ guide:{t:"<p>Separated bins on site: <strong>yellow</strong> for plastic, metal cans and tetra packs; <strong>blue</strong> for clean paper; <strong>green</strong> for glass; <strong>grey</strong> for general waste.</p><p>Pack it in, pack it out. Respect the farm animals and local wildlife, and don't feed them. Bring a pocket ashtray for cigarette butts. Protect the Ebro Delta.</p>",
+   c:[{r:"GUIDE v6 · §7 Your Campsite — Waste Disposal",t:"Four-way separation by colour: yellow for plastic metal and tetra packs, blue for clean paper, green for glass, grey for general waste."},
+      {r:"GUIDE v6 · §12 Leave No Trace",t:"Pack it in pack it out, respect and do not feed farm animals and wildlife, separate recycling, use a pocket ashtray, protect the Ebro Delta."}]},
+ chat:null},
+{q:"Can I pay by card?",
+ k:"card cash payment pay money atm bank contactless food trucks bar euros",
+ guide:{t:"<p>The packing list asks you to bring <strong>cash and a bank card</strong>. Bar prices are described as reasonable.</p><p>It doesn't say which the vendors take.</p>",
+   c:[{r:"GUIDE v6 · §3 Packing — Before You Leave Home",t:"Cash and bank card both listed as things to bring."}]},
+ chat:{t:"<p><strong>Yes — cards are accepted for food and drinks.</strong> Confirmed on 6 August in answer to a direct question about the food trucks.</p><p>Bring some cash anyway. It's a field, card readers need signal, and the handbook warns calls can be spotty.</p>",
+   c:[{r:"GROUP · 6 Aug · participant",t:"Asked whether food could be paid for by card at the food trucks."},
+      {r:"GROUP · 6 Aug · organiser side",t:"Confirmation that cards will be accepted for food and drinks."}]}},
+
+{q:"Are the shops open on Sunday?",
+ k:"shop shops supermarket supers sunday closed groceries tortosa aldea buy provisions market",
+ guide:{t:"<p>Grocery stores are a 10–20 minute drive away and not walkable. Asking for a ride in the WhatsApp group is the easiest way in.</p><p>Opening hours aren't given.</p>",
+   c:[{r:"GUIDE v6 · §9 Food & Drink",t:"Grocery stores are a 10-20 minute drive away and not walkable, with a ride from the WhatsApp group the easiest way to get there."}]},
+ chat:{t:"<p><strong>Mostly closed.</strong> Someone checked three Tortosa supermarkets on 6 August — all three closed Sundays according to Google. The traditional market is also shut on Sundays.</p><p>One shop was shared as open every Sunday, along with a note that smaller shops exist. If you're arriving Sunday the 9th, buy provisions before you get here.</p>",
+   c:[{r:"GROUP · 6 Aug · participants",t:"Three Tortosa supermarkets checked and found closed on Sundays, along with the traditional market."},
+      {r:"GROUP · 6 Aug · participant",t:"A map link shared for a shop open every Sunday, with a note that multiple smaller shops exist."}]}},
+
+{q:"Is anything affecting travel right now?",
+ k:"strike flight cancelled airport barcelona delay travel disruption news current problem",
+ guide:{t:"<p>The handbook's traffic advisory covers Wednesday 12 August — hundreds of thousands travelling toward totality, severe congestion on the AP-7 and N-340 from early in the day.</p><p>It can't cover live disruption.</p>",
+   c:[{r:"GUIDE v6 · §2 Before You Travel",t:"Wednesday 12 August expected to be one of the busiest traffic days in the region with severe congestion expected on major roads."}]},
+ chat:{t:"<p><strong>Barcelona airport ground crew were on strike on 6 August</strong>, with at least one attendee's flight cancelled and rerouted through Paris.</p><p>If you're flying into Barcelona, check your carrier before leaving for the airport. This entry was built on 8 August and may already be out of date — the group is the live source.</p>",
+   c:[{r:"GROUP · 6 Aug · participant",t:"Report of Barcelona ground crew strike causing a cancelled flight, with advice for others travelling to check how it affects them."}]}},
+
+{q:"Who do I ask if this doesn't answer it?",
+ k:"ask help contact organiser abigail production question support who unanswered group",
+ guide:{t:"<p>The handbook points to the WhatsApp Community for updates, rideshares and questions, and to Production on site for lost property, opting out of photography, storage and anything else.</p>",
+   c:[{r:"GUIDE v6 · §1 Welcome",t:"The WhatsApp Community described as the best place for festival updates, coordinating rideshares, asking questions and connecting with participants."}]},
+ chat:{t:"<p><strong>The director has been on site since 6 August and said she is unlikely to answer questions</strong> — she asked people to help each other instead, and acknowledged on 7 August that communications need to be better.</p><p>In practice several experienced participants are answering, and most operational questions get a reply within an hour or two. There are also sub-groups: Ride Share, Ticket Resale, Kidz-NIDO, the Ceremony group, and one for solo attendees.</p><p>Once you're on site, Production is the place for anything real.</p>",
+   c:[{r:"GROUP · 6 Aug · organiser",t:"Announcement of being on site, unlikely to answer questions, and asking people to help each other."},
+      {r:"GROUP · 7 Aug · organiser",t:"Acknowledgement that communications need to improve."}]}}
+];
+
+const SYN={van:"vehicle camper",loo:"toilet",wc:"toilet",bog:"toilet",kid:"kids children",
+ aircon:"ac air conditioning",eyes:"eye glasses safety",blind:"eye safety glasses",
+ wifi:"signal internet",bus:"travel barcelona",hot:"shade heat",dog:"dogs pet",
+ loud:"music noise sleep",booze:"bar drinks alcohol",toilets:"toilet",showers:"shower",
+ charge:"charging electricity power socket",plug:"electricity socket power",
+ arrive:"arrival gate open",bins:"rubbish waste recycling",bin:"rubbish waste",
+ sunburn:"heat sunscreen",boat:"pool swimming",eat:"food catering",drink:"water bar"};
+
+const out=document.getElementById("out"), box=document.getElementById("q");
+
+function score(it,terms){
+  const q=it.q.toLowerCase(), k=it.k.toLowerCase();
+  const body=[it.guide,it.chat,it.none].filter(Boolean)
+    .map(s=>s.t).join(" ").replace(/<[^>]+>/g," ").toLowerCase();
+  let s=0;
+  terms.forEach(t=>{
+    if(t.length<2)return;
+    if(k.split(/\s+/).includes(t))s+=10;
+    else if(q.includes(t))s+=8;
+    else if(k.includes(t))s+=5;
+    else if(body.includes(t))s+=2;
+    else if(t.length>4&&(k+q).includes(t.slice(0,t.length-2)))s+=3;
+  });
+  return s;
+}
+
+function section(cls,label,s){
+  if(!s)return"";
+  return `<div class="from"><span class="lbl ${cls}">${label}</span>${s.t}
+    ${s.stale?`<div class="note"><b>Out of date</b>${s.stale}</div>`:""}
+    <ul class="srcs">${s.c.map(c=>`<li><span class="ref">${c.r}</span>${c.t}</li>`).join("")}</ul></div>`;
+}
+
+function show(it){
+  return `<div class="block"><h2 class="qh">${it.q}</h2>
+    ${it.conflict?`<div class="flag"><b>The two sources disagree</b>${it.conflict}</div>`:""}
+    ${section("l-guide","From the handbook",it.guide)}
+    ${!it.guide&&!it.none?`<div class="from"><span class="lbl l-guide">From the handbook</span>
+      <p class="silent">The handbook doesn't cover this.</p></div>`:""}
+    ${section("l-chat","From the group",it.chat)}
+    ${!it.chat&&!it.none?`<div class="from"><span class="lbl l-chat">From the group</span>
+      <p class="silent">Nobody has asked this in the chat.</p></div>`:""}
+    ${section("l-none","Neither source",it.none)}
+  </div>`;
+}
+
+function suggestions(exclude){
+  const ex=new Set((exclude||[]).map(i=>i.q));
+  const picks=DB.filter(i=>!ex.has(i.q)).slice(0,7);
+  return `<div class="more"><p>${exclude?"Other questions":"People have asked"}</p>
+    ${picks.map(i=>`<button data-q="${i.q.replace(/"/g,"&quot;")}">${i.q}</button>`).join("")}</div>`;
+}
+
+function render(){
+  const raw=box.value.trim().toLowerCase();
+  if(!raw){out.innerHTML=suggestions();return;}
+  let terms=raw.split(/[^a-z0-9à-ÿ]+/).filter(Boolean);
+  terms=terms.flatMap(t=>SYN[t]?[t,...SYN[t].split(" ")]:[t]);
+  const hits=DB.map(i=>({i,s:score(i,terms)})).filter(x=>x.s>=5)
+    .sort((a,b)=>b.s-a.s).slice(0,3).map(x=>x.i);
+  if(!hits.length){
+    out.innerHTML=`<div class="empty"><b>Nothing on file for that.</b>
+      This only knows what the Festival Handbook and the participants chat have said.
+      Ask in the group — then it becomes an answer here.</div>`+suggestions();
+    return;
+  }
+  out.innerHTML=hits.map(show).join("")+suggestions(hits);
+}
+
+out.addEventListener("click",e=>{
+  const b=e.target.closest("button[data-q]");
+  if(!b)return;
+  box.value=b.dataset.q;render();window.scrollTo({top:0,behavior:"smooth"});
+});
+box.addEventListener("input",render);
+render();
+
+if("serviceWorker"in navigator){
+  const sw=`self.addEventListener("install",e=>{self.skipWaiting();
+    e.waitUntil(caches.open("so5").then(c=>c.add("./")))});
+    self.addEventListener("activate",e=>{e.waitUntil(caches.keys()
+      .then(k=>Promise.all(k.filter(n=>n!=="so5").map(n=>caches.delete(n)))))});
+    self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request)
+      .then(r=>r||fetch(e.request).then(x=>{const cl=x.clone();
+        caches.open("so5").then(c=>c.put(e.request,cl));return x;})
+      .catch(()=>caches.match("./"))))});`;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"text/javascript"}))).catch(()=>{});
+}
+</script>
+</body>
+</html>
